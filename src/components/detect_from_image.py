@@ -1,6 +1,5 @@
 from keras.models import load_model
-import cv2, sys, os
-from imutils.video import VideoStream
+import sys, os
 import numpy as np
 from keras.applications.mobilenet_v2 import preprocess_input
 from keras.preprocessing.image import img_to_array, load_img
@@ -13,10 +12,15 @@ from datetime import datetime
 logging.info("Model Loading Started")
 # Mask Detector Model
 Mask_Model = load_model('artifacts/Mask_detection_model.h5')
-# Face detector models
+# Face detector models (lazy import cv2 to avoid headless issues at import time)
 prototxt = r"artifacts/FaceModels/deploy.prototxt"
 weights = r"artifacts/FaceModels/res10_300x300_ssd_iter_140000.caffemodel"
-Face_Model = cv2.dnn.readNet(prototxt, weights)
+try:
+	import cv2
+	Face_Model = cv2.dnn.readNet(prototxt, weights)
+except Exception as _e:
+	# Defer cv2 initialization to function; keep a placeholder
+	Face_Model = None
 logging.info("Model Loading Ended")
 
 
@@ -24,6 +28,11 @@ def from_image(img):
 	#img = load_img(img)
 	img = img_to_array(img)
 	h,w = img.shape[:2]
+	# Ensure cv2 and Face_Model are available
+	import cv2
+	global Face_Model
+	if Face_Model is None:
+		Face_Model = cv2.dnn.readNet(prototxt, weights)
 	blob = cv2.dnn.blobFromImage(image=img, 
 										scalefactor=1.0, 
 										size=(224, 224), 
