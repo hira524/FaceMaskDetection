@@ -1,6 +1,5 @@
 import streamlit as st
 from src import utils
-from src.components import detect_from_video
 from src.components import detect_from_image
 from PIL import Image
 import io
@@ -23,7 +22,7 @@ if st.sidebar.button('About This App'):
     st.markdown('The main goal of the Face Mask Detection project is make a system that can automatically detect and differentiate faces into two categories: With Mask and Without Mask. The system uses a combination of deep learning models and image processing techniques.')
     st.title('How To Use :sunflower:')
     st.header('Web Cam')
-    st.markdown('To use this project using webcam. You can just click on the Start webcam button which is located in the sidebar (under the Face Mask Detection Using WebCam text). when you click on it, it will open a webcam in the new tab and then you can click on that newtab and use your webcam for face mask detection, also to stop the webcam you can use ESC button on your keyboard which will stop your webcam and then you can use other features of this app.')
+    st.markdown('To use this project using webcam (on local desktops only). Cloud environments do not support camera windows. On desktop, click the Start webcam button from the sidebar to open the webcam window. Press ESC to stop.')
     st.header('Upload Image')
     st.markdown('To use this project using Upload Image. You can just click on the Browse files button which is located in the sidebar (under the Face Mask Detection Using Upload Image text). This Browse files button takes you to your local computer where you can select the particular image that in which you want to use detect the face masks. when you select the image this will automatically show you your image with masks and no masks. Also some statistics are also there under the image that is produced, you can check that too. ')
 
@@ -32,6 +31,16 @@ if st.sidebar.button('About Creator'):
     utils.about_me()
 
 st.sidebar.header('Face Mask Detection Using Upload Image')
+st.sidebar.header('Face Mask Detection Using WebCam (desktop only)')
+
+# Webcam button (lazy import to avoid cv2 errors in cloud)
+if st.sidebar.button('Start webcam'):
+    try:
+        from src.components import detect_from_video
+        detect_from_video.real_time()
+    except Exception as e:
+        st.error('Webcam is not supported in this environment or OpenCV GUI backend is unavailable. Please run locally on your desktop.')
+        st.exception(e)
 # file uploader 
 uploaded_file = st.sidebar.file_uploader("Choose a file", type=['jpg'])
 if uploaded_file is not None:
