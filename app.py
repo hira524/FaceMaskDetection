@@ -65,7 +65,11 @@ if uploaded_file is not None:
 
 st.sidebar.header('Face Mask Detection Using WebCam')
 if st.sidebar.button('Start WebCam'):
-    
-    st.title("WebCam starting in some time, usually it takes 4-5 seconds")
-    detect_from_video.real_time()
+    try:
+        from src.components import detect_from_video
+        st.title("WebCam starting in some time, usually it takes 4-5 seconds")
+        detect_from_video.real_time()
+    except Exception as e:
+        st.error('Webcam is not supported in this environment or OpenCV GUI backend is unavailable. Please run locally on your desktop.')
+        st.exception(e)
 st.sidebar.text("Enter ESC button to stop")
