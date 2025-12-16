@@ -1,9 +1,9 @@
-from keras.models import load_model
+from tensorflow.keras.models import load_model
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+from tensorflow.keras.preprocessing.image import img_to_array, load_img
 import cv2, sys
 from imutils.video import VideoStream
 import numpy as np
-from keras.applications.mobilenet_v2 import preprocess_input
-from keras.preprocessing.image import img_to_array, load_img
 from src.logger import logging
 from src.exception import CustomException
 
