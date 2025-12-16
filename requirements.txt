@@ -1,9 +1,10 @@
 imutils
-keras
+keras==2.11.0
 numpy
 opencv-python-headless
 scikit-learn 
-tensorflow
+tensorflow==2.11.0
+h5py==3.8.0
 streamlit
 pillow
 
